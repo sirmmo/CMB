@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<countries>
+  <country name="Italia" code="IT" languagecode="1040">
+    <banks>
+      <bank name="Unicredit S.p.A." url="https://www.unicredit.it/">
+        <services>
+          <service id="EF518B34-6634-46D5-A793-6FC7BD728686" type="0" national="800822056" international="+390260843768" />
+          <service id="831C3629-6683-4951-9490-94ED9D92867B" type="1" national="800078777" international="+390458064686" />
+          <service id="2D61E3DC-1999-422B-BC7B-2C8AA3FE98C7" type="2" national="800323285" international="" />
+          <service id="2D61E3DC-1999-422B-BC7B-2C8AA3FE98C8" type="3" national="800575757" international="+390233408973" />
+          <service id="2D61E3DC-1999-422B-BC7B-2C8AA3FE98C9" type="4" national="848880088" international="+390233408967" />
+        </services>
+      </bank>
+
+      <bank name="CheBanca!" url="http://www.chebanca.it/">
+        <services>
+          <service id="EF518B34-6634-46D5-A793-6FC7BD728681" type="0" national="800101030" international="+12345678" />
+          <service id="831C3629-6683-4951-9490-94ED9D928672" type="1" national="800101030" international="+12345678" />
+          <service id="2D61E3DC-1999-422B-BC7B-2C8AA3FE98C3" type="2" national="800101030" international="" />
+          <service id="2D61E3DC-1999-422B-BC7B-2C8AA3FE98C4" type="3" national="800101030" international="+12345678" />
+          <service id="2D61E3DC-1999-422B-BC7B-2C8AA3FE98C5" type="4" national="800101030" international="+12345678" />
+        </services>
+      </bank>
+    </banks>
+  </country>
+  <country name="Deutschland" code="DE" languagecode="1038">
+    <banks>
+      <bank name="Sparkasse" url="http://www.sparkasse.de/">
+        <services>
+          <service id="EF518B34-6634-46D5-A793-6FC7BD728685" type="0" national="800822056" international="+390260843768" />
+          <service id="831C3629-6683-4951-9490-94ED9D928674" type="1" national="800078777" international="+390458064686" />
+          <service id="2D61E3DC-1999-422B-BC7B-2C8AA3FE98C0" type="2" national="800323285" international="" />
+          <service id="2D61E3DC-1999-422B-BC7B-2C8AA3FE98C1" type="3" national="800575757" international="+390233408973" />
+          <service id="2D61E3DC-1999-422B-BC7B-2C8AA3FE98C2" type="4" national="848880088" international="+390233408967" />
+        </services>
+      </bank>
+    </banks>
+  </country>
+</countries>
