@@ -14,30 +14,80 @@ using System.Xml.Linq;
 using System.Xml;
 using System.Collections.ObjectModel;
 using Microsoft.Phone.Tasks;
+using System.IO.IsolatedStorage;
+using System.IO;
+using SilverlightPhoneDatabase;
 
 namespace CMB.Phone
 {
     public partial class MainPage : PhoneApplicationPage
     {
-        private List<Country> _countries;
-        private List<Service> _services;
+        public DependencyProperty ServicesProperty = DependencyProperty.RegisterAttached("Services", typeof(List<Service>), typeof(MainPage), new PropertyMetadata(new List<Service>()));
+        public DependencyProperty FavsProperty = DependencyProperty.RegisterAttached("Favs", typeof(List<Service>), typeof(MainPage), new PropertyMetadata(new List<Service>()));
+        private static List<Country> _countries = new List<Country>();
+        private List<Service> _services = new List<Service>();
+        private List<Service> _favs = new List<Service>();
 
+        public List<Service> Favs
+        {
+            get { return (List<Service>)GetValue(FavsProperty); }
+            set { SetValue(FavsProperty, value); }
+        }
+
+        public List<Service> Services
+        {
+            get { return (List<Service>)GetValue(ServicesProperty); }
+            set { SetValue(ServicesProperty, value); }
+        }
+        private IsolatedStorageFile myFile = IsolatedStorageFile.GetUserStoreForApplication();
+        private string dfile = "data/data.xml";
+        IsolatedStorageFileStream datafile;
+        private Database database;
         // Constructor
         public MainPage()
         {
             InitializeComponent();
+            if (!Database.DoesDatabaseExists("favs"))
+            {
+                database = Database.CreateDatabase("favs");
+                database.CreateTable<Guid>();
+                database.Save();
+            }
+            else
+            {
+                database = Database.OpenDatabase("favs", string.Empty, false);
+            }
+
+            Favs = new List<Service>();
 
 
-            XDocument _data = XDocument.Load("data/data.xml");
-             _countries = ConvertXml(_data);
-             InvertTree();
+            //if (!myFile.FileExists(dfile)){
+            //    datafile = myFile.CreateFile(dfile);
+            //    datafile.Close();
+            //}
+
+            XDocument _data = XDocument.Load(dfile);
+            _countries = ConvertXml(_data);
+            InvertTree();
             //ObservableCollection<Country> i = new ObservableCollection<Country>(_countries);
-            
-            DataContext = _services;
+
+            foreach (Guid guid in database.Table<Guid>().ToList<Guid>())
+            {
+                foreach (var svc in Services)
+                {
+                    if (svc.ServiceID == guid)
+                    {
+                        Favs.Add(svc);
+                        svc.Favourite = true;
+                    }
+                }
+            }
+
+            DataContext = this;
         }
 
-       
-      
+
+
         private void Button_Click(object sender, RoutedEventArgs e)
         {
 
@@ -85,7 +135,8 @@ namespace CMB.Phone
                                            ServiceID = new Guid(service.Attribute("id").Value),
                                            Type = (ServiceType)Convert.ToInt16(service.Attribute("type").Value),
                                            NationalNumber = service.Attribute("national").Value,
-                                           InternationalNumber = service.Attribute("international").Value
+                                           InternationalNumber = service.Attribute("international").Value,
+                                           Favourite = false
                                        }
 
 
@@ -103,8 +154,9 @@ namespace CMB.Phone
 
         }
 
-        public void InvertTree() {
-            _services = new List<Service>();
+        public void InvertTree()
+        {
+            Services = new List<Service>();
             foreach (var country in _countries)
             {
                 foreach (var bank in country.Banks)
@@ -112,7 +164,7 @@ namespace CMB.Phone
                     foreach (var service in bank.Services)
                     {
                         service.Parent = bank;
-                        _services.Add(service);
+                        Services.Add(service);
                     }
                     bank.Parent = country;
                 }
@@ -127,6 +179,61 @@ namespace CMB.Phone
             pt.PhoneNumber = s.NationalNumber;
             pt.DisplayName = s.Parent.Name;
             pt.Show();
+        }
+
+        private void CheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            var snd = (sender as CheckBox).Tag as Service;
+            if (!database.Table<Guid>().Contains(snd.ServiceID))
+            {
+                database.Table<Guid>().Add(snd.ServiceID);
+                database.Save();
+                Favs = new List<Service>();
+                foreach (Guid guid in database.Table<Guid>().ToList<Guid>())
+                {
+                    foreach (var svc in Services)
+                    {
+                        if (svc.ServiceID == guid)
+                        {
+                            Favs.Add(svc);
+
+                            svc.Favourite = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        private void CheckBox_Unchecked(object sender, RoutedEventArgs e)
+        {
+            var snd = (sender as CheckBox).Tag as Service;
+            database.Table<Guid>().Remove(snd.ServiceID);
+            database.Save();
+            Favs = new List<Service>();
+            foreach (Guid guid in database.Table<Guid>().ToList<Guid>())
+            {
+                foreach (var svc in Services)
+                {
+                    if (svc.ServiceID == guid)
+                    {
+                        Favs.Add(svc);
+
+                        svc.Favourite = false;
+                    }
+                }
+            }
+        }
+
+        private void ApplicationBarIconButton_Click(object sender, EventArgs e)
+        {
+            database.Table<Guid>().Clear();
+            database.Save();
+            Favs = new List<Service>();
+            foreach (var item in Services)
+            {
+                item.Favourite = false;
+            }
+
         }
     }
 }

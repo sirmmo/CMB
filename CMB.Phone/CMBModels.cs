@@ -19,6 +19,7 @@ namespace CMB.Phone
         public string NationalNumber { get; set; }
         public string InternationalNumber { get; set; }
         public Bank Parent { get; set; }
+        public bool Favourite { get; set; }
 
     }
 

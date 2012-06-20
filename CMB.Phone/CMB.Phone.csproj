@@ -51,6 +51,7 @@
     <Reference Include="Microsoft.Phone" />
     <Reference Include="Microsoft.Phone.Controls" />
     <Reference Include="Microsoft.Phone.Interop" />
+    <Reference Include="SilverlightPhoneDatabase, Version=1.3.0.0, Culture=neutral, processorArchitecture=MSIL" />
     <Reference Include="System.Data.Linq" />
     <Reference Include="System.Windows" />
     <Reference Include="system" />
@@ -104,6 +105,7 @@
     </Content>
     <Resource Include="PanoramaBackground.png" />
     <Content Include="data\data.xml" />
+    <Content Include="SilverlightPhoneDatabase.dll" />
     <Content Include="SplashScreenImage.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\Silverlight for Phone\$(TargetFrameworkVersion)\Microsoft.Silverlight.$(TargetFrameworkProfile).Overrides.targets" />
